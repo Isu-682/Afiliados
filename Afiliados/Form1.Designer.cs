@@ -34,8 +34,8 @@
             this.dgvTablaAfiliados = new System.Windows.Forms.DataGridView();
             this.labFechaFinal = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tsslTimer = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ofdExcel = new System.Windows.Forms.OpenFileDialog();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.cbEntidad = new System.Windows.Forms.ComboBox();
             this.cbMunicipio = new System.Windows.Forms.ComboBox();
@@ -46,12 +46,11 @@
             this.chboxFecha = new System.Windows.Forms.CheckBox();
             this.labResultadoAfiliado = new System.Windows.Forms.Label();
             this.labNumeroAfiliados = new System.Windows.Forms.Label();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Colum4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnCargar = new System.Windows.Forms.Button();
+            this.btnReiniciar = new System.Windows.Forms.Button();
+            this.tbRutaExcel = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTablaAfiliados)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -77,13 +76,6 @@
             // dgvTablaAfiliados
             // 
             this.dgvTablaAfiliados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTablaAfiliados.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Colum4,
-            this.Column4,
-            this.Column5});
             this.dgvTablaAfiliados.Location = new System.Drawing.Point(12, 188);
             this.dgvTablaAfiliados.Name = "dgvTablaAfiliados";
             this.dgvTablaAfiliados.Size = new System.Drawing.Size(717, 150);
@@ -109,21 +101,50 @@
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
             // tsslTimer
             // 
             this.tsslTimer.Name = "tsslTimer";
             this.tsslTimer.Size = new System.Drawing.Size(118, 17);
             this.tsslTimer.Text = "toolStripStatusLabel1";
             // 
+            // ofdExcel
+            // 
+            this.ofdExcel.FileName = "openFileDialog1";
+            // 
             // cbEntidad
             // 
             this.cbEntidad.FormattingEnabled = true;
             this.cbEntidad.Items.AddRange(new object[] {
-            "COAHUILA"});
+            "AGUASCALIENTES",
+            "BAJA CALIFORNIA",
+            "BAA CALIFORNIA SUR",
+            "CAMPECHE",
+            "COAHUILA",
+            "COLIMA",
+            "CHIAPAS",
+            "CHIHUAHUA",
+            "CIUDAD DE MEXICO",
+            "DURANGO",
+            "GUANAJUATO",
+            "GUERRERO",
+            "HIDALGO",
+            "JALISCO",
+            "MORELOS",
+            "NAYARIT",
+            "NUEVO LEON",
+            "OAXACA",
+            "PUEBLA",
+            "QUERETARO",
+            "QUINTANA ROO",
+            "SAN LUIS POTOSI",
+            "SINALOA",
+            "SONORA",
+            "TABASCO",
+            "TAMAULIPAS",
+            "TLAXCALA",
+            "VERACRUZ",
+            "YUCATAN",
+            "ZACATECAS"});
             this.cbEntidad.Location = new System.Drawing.Point(104, 105);
             this.cbEntidad.Name = "cbEntidad";
             this.cbEntidad.Size = new System.Drawing.Size(121, 21);
@@ -200,7 +221,7 @@
             // 
             // dtpFecha
             // 
-            this.dtpFecha.Location = new System.Drawing.Point(256, 40);
+            this.dtpFecha.Location = new System.Drawing.Point(465, 58);
             this.dtpFecha.Name = "dtpFecha";
             this.dtpFecha.Size = new System.Drawing.Size(194, 20);
             this.dtpFecha.TabIndex = 12;
@@ -208,7 +229,7 @@
             // chboxFecha
             // 
             this.chboxFecha.AutoSize = true;
-            this.chboxFecha.Location = new System.Drawing.Point(285, 12);
+            this.chboxFecha.Location = new System.Drawing.Point(494, 30);
             this.chboxFecha.Name = "chboxFecha";
             this.chboxFecha.Size = new System.Drawing.Size(126, 17);
             this.chboxFecha.TabIndex = 13;
@@ -235,53 +256,60 @@
             this.labNumeroAfiliados.TabIndex = 14;
             this.labNumeroAfiliados.Text = "NUMERO DE AFILIADOS";
             // 
-            // Column1
+            // label3
             // 
-            this.Column1.Frozen = true;
-            this.Column1.HeaderText = "ID";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(40, 24);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(58, 13);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "ARCHIVO:";
             // 
-            // Column2
+            // label4
             // 
-            this.Column2.Frozen = true;
-            this.Column2.HeaderText = "ENTIDAD";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(40, 77);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.TabIndex = 16;
             // 
-            // Column3
+            // btnCargar
             // 
-            this.Column3.Frozen = true;
-            this.Column3.HeaderText = "MUNICIPIO";
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
+            this.btnCargar.Location = new System.Drawing.Point(38, 59);
+            this.btnCargar.Name = "btnCargar";
+            this.btnCargar.Size = new System.Drawing.Size(75, 23);
+            this.btnCargar.TabIndex = 18;
+            this.btnCargar.Text = "CARGAR";
+            this.btnCargar.UseVisualStyleBackColor = true;
+            this.btnCargar.Click += new System.EventHandler(this.btnCargar_Click);
             // 
-            // Colum4
+            // btnReiniciar
             // 
-            this.Colum4.Frozen = true;
-            this.Colum4.HeaderText = "NOMBRE";
-            this.Colum4.Name = "Colum4";
-            this.Colum4.ReadOnly = true;
+            this.btnReiniciar.Location = new System.Drawing.Point(161, 58);
+            this.btnReiniciar.Name = "btnReiniciar";
+            this.btnReiniciar.Size = new System.Drawing.Size(75, 23);
+            this.btnReiniciar.TabIndex = 19;
+            this.btnReiniciar.Text = "REINICIAR";
+            this.btnReiniciar.UseVisualStyleBackColor = true;
+            this.btnReiniciar.Click += new System.EventHandler(this.btnReiniciar_Click);
             // 
-            // Column4
+            // tbRutaExcel
             // 
-            this.Column4.Frozen = true;
-            this.Column4.HeaderText = "FECHA AFILIACION";
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            // 
-            // Column5
-            // 
-            this.Column5.Frozen = true;
-            this.Column5.HeaderText = "ESTATUS";
-            this.Column5.Name = "Column5";
-            this.Column5.ReadOnly = true;
+            this.tbRutaExcel.Location = new System.Drawing.Point(104, 21);
+            this.tbRutaExcel.Name = "tbRutaExcel";
+            this.tbRutaExcel.Size = new System.Drawing.Size(246, 20);
+            this.tbRutaExcel.TabIndex = 20;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(743, 363);
+            this.Controls.Add(this.tbRutaExcel);
+            this.Controls.Add(this.btnReiniciar);
+            this.Controls.Add(this.btnCargar);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.labResultadoAfiliado);
             this.Controls.Add(this.labNumeroAfiliados);
             this.Controls.Add(this.chboxFecha);
@@ -315,7 +343,7 @@
         private System.Windows.Forms.Label labFechaFinal;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsslTimer;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.OpenFileDialog ofdExcel;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ComboBox cbEntidad;
         private System.Windows.Forms.ComboBox cbMunicipio;
@@ -324,14 +352,13 @@
         private System.Windows.Forms.Label labFinalResultadoFecha;
         private System.Windows.Forms.DateTimePicker dtpFecha;
         private System.Windows.Forms.CheckBox chboxFecha;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Colum4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.Label labResultadoAfiliado;
         private System.Windows.Forms.Label labNumeroAfiliados;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnCargar;
+        private System.Windows.Forms.Button btnReiniciar;
+        private System.Windows.Forms.TextBox tbRutaExcel;
     }
 }
 
