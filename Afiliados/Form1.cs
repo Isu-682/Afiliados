@@ -64,7 +64,12 @@ namespace Afiliados
         private void Form1_Load(object sender, EventArgs e)
         {
             dtpFechaInicial.Visible = false;
+            dtpFechaFinal.Visible = false;
             dgvTablaAfiliados.AutoGenerateColumns = false;
+
+            tTiempo.Interval = 1000;
+            tTiempo.Tick += tTiempo_Tick;
+            tTiempo.Start();
 
             cbEntidad.DataSource = entidadMunicipios.Keys.ToList();
             if (cbEntidad.Items.Count > 0)
@@ -78,7 +83,14 @@ namespace Afiliados
 
         private void chboxFecha_CheckedChanged(object sender, EventArgs e)
         {
-            dtpFechaInicial.Visible = chboxFecha.Checked;
+            bool mostrar = chboxFecha.Checked;
+            dtpFechaInicial.Visible = dtpFechaFinal.Visible = mostrar;
+
+            if (!mostrar)
+            {
+                dtpFechaInicial.Value = DateTime.Today;
+                dtpFechaFinal.Value = DateTime.Today;
+            }
         }
 
 
@@ -202,42 +214,35 @@ namespace Afiliados
                     filtros.Add($"MUNICIPIO = '{municipio.Replace("'", "''")}'");
             }
 
-            if (chboxFecha.Checked)
+            if (dtpFechaInicial.Visible && dtpFechaFinal.Visible)
             {
-                DateTime fecha = dtpFechaInicial.Value.Date;
-                filtros.Add($"FECHA_AFILIACION = #{fecha:MM/dd/yyyy}#");
+                DateTime fechaInicio = dtpFechaInicial.Value.Date;
+                DateTime fechaFin = dtpFechaFinal.Value.Date;
+
+                filtros.Add($"FECHA_AFILIACION >= #{fechaInicio:MM/dd/yyyy}# AND FECHA_AFILIACION <= #{fechaFin:MM/dd/yyyy}#");
             }
 
             vista.RowFilter = string.Join(" AND ", filtros);
+
             dgvTablaAfiliados.DataSource = vista;
 
             labResultadoAfiliado.Text = $"{vista.Count}";
 
-            if (vista.Count > 0 && vista.Table.Columns.Contains("FECHA_AFILIACION"))
+            if (vista.Count > 0)
             {
-                var fechas = vista.ToTable().AsEnumerable()
-                    .Where(r => !r.IsNull("FECHA_AFILIACION"))
-                    .Select(r => Convert.ToDateTime(r["FECHA_AFILIACION"]))
-                    .ToList();
+                var fechasFiltradas = vista.Cast<DataRowView>()
+                                          .Select(r => Convert.ToDateTime(r["FECHA_AFILIACION"]))
+                                          .OrderBy(f => f)
+                                          .ToList();
 
-                if (fechas.Any())
-                {
-                    labInicioResultadoFecha.Text = fechas.Min().ToString("dd/MM/yyyy");
-                    labFinalResultadoFecha.Text = fechas.Max().ToString("dd/MM/yyyy");
-                }
-                else
-                {
-                    labInicioResultadoFecha.Text = "No disponible";
-                    labFinalResultadoFecha.Text = "No disponible";
-                }
+                labInicioResultadoFecha.Text = fechasFiltradas.First().ToString("dd/MM/yyyy");
+                labFinalResultadoFecha.Text = fechasFiltradas.Last().ToString("dd/MM/yyyy");
             }
             else
             {
                 labInicioResultadoFecha.Text = "No disponible";
                 labFinalResultadoFecha.Text = "No disponible";
             }
-
-
         }
 
         private void ConfigurarColumnas()
@@ -291,6 +296,11 @@ namespace Afiliados
             {
                 cbMunicipio.DataSource = entidadMunicipios[entidadSeleccionada];
             }
+        }
+
+        private void tTiempo_Tick(object sender, EventArgs e)
+        {
+            tsslTiempo.Text = DateTime.Now.ToString("HH:mm:ss");
         }
     }
 }

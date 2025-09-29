@@ -40,9 +40,9 @@
             this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.labFechaFinal = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tsslTimer = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslTiempo = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdExcel = new System.Windows.Forms.OpenFileDialog();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tTiempo = new System.Windows.Forms.Timer(this.components);
             this.cbEntidad = new System.Windows.Forms.ComboBox();
             this.cbMunicipio = new System.Windows.Forms.ComboBox();
             this.labFechaInicio = new System.Windows.Forms.Label();
@@ -58,6 +58,9 @@
             this.btnReiniciar = new System.Windows.Forms.Button();
             this.tbRutaExcel = new System.Windows.Forms.TextBox();
             this.btnFiltrar = new System.Windows.Forms.Button();
+            this.dtpFechaFinal = new System.Windows.Forms.DateTimePicker();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTablaAfiliados)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -65,7 +68,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(43, 108);
+            this.label1.Location = new System.Drawing.Point(35, 108);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 0;
@@ -141,7 +144,7 @@
             // labFechaFinal
             // 
             this.labFechaFinal.AutoSize = true;
-            this.labFechaFinal.Location = new System.Drawing.Point(282, 155);
+            this.labFechaFinal.Location = new System.Drawing.Point(311, 155);
             this.labFechaFinal.Name = "labFechaFinal";
             this.labFechaFinal.Size = new System.Drawing.Size(85, 13);
             this.labFechaFinal.TabIndex = 3;
@@ -150,22 +153,25 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsslTimer});
+            this.tsslTiempo});
             this.statusStrip1.Location = new System.Drawing.Point(0, 341);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(929, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // tsslTimer
+            // tsslTiempo
             // 
-            this.tsslTimer.Name = "tsslTimer";
-            this.tsslTimer.Size = new System.Drawing.Size(118, 17);
-            this.tsslTimer.Text = "toolStripStatusLabel1";
+            this.tsslTiempo.Name = "tsslTiempo";
+            this.tsslTiempo.Size = new System.Drawing.Size(0, 17);
             // 
             // ofdExcel
             // 
             this.ofdExcel.FileName = "openFileDialog1";
+            // 
+            // tTiempo
+            // 
+            this.tTiempo.Tick += new System.EventHandler(this.tTiempo_Tick);
             // 
             // cbEntidad
             // 
@@ -251,7 +257,7 @@
             // labFechaInicio
             // 
             this.labFechaInicio.AutoSize = true;
-            this.labFechaInicio.Location = new System.Drawing.Point(282, 108);
+            this.labFechaInicio.Location = new System.Drawing.Point(311, 108);
             this.labFechaInicio.Name = "labFechaInicio";
             this.labFechaInicio.Size = new System.Drawing.Size(95, 13);
             this.labFechaInicio.TabIndex = 9;
@@ -261,7 +267,7 @@
             // 
             this.labInicioResultadoFecha.AutoSize = true;
             this.labInicioResultadoFecha.ForeColor = System.Drawing.Color.Gray;
-            this.labInicioResultadoFecha.Location = new System.Drawing.Point(393, 108);
+            this.labInicioResultadoFecha.Location = new System.Drawing.Point(422, 108);
             this.labInicioResultadoFecha.Name = "labInicioResultadoFecha";
             this.labInicioResultadoFecha.Size = new System.Drawing.Size(0, 13);
             this.labInicioResultadoFecha.TabIndex = 11;
@@ -270,14 +276,14 @@
             // 
             this.labFinalResultadoFecha.AutoSize = true;
             this.labFinalResultadoFecha.ForeColor = System.Drawing.Color.Gray;
-            this.labFinalResultadoFecha.Location = new System.Drawing.Point(390, 155);
+            this.labFinalResultadoFecha.Location = new System.Drawing.Point(422, 155);
             this.labFinalResultadoFecha.Name = "labFinalResultadoFecha";
             this.labFinalResultadoFecha.Size = new System.Drawing.Size(0, 13);
             this.labFinalResultadoFecha.TabIndex = 10;
             // 
             // dtpFechaInicial
             // 
-            this.dtpFechaInicial.Location = new System.Drawing.Point(455, 101);
+            this.dtpFechaInicial.Location = new System.Drawing.Point(721, 77);
             this.dtpFechaInicial.Name = "dtpFechaInicial";
             this.dtpFechaInicial.Size = new System.Drawing.Size(194, 20);
             this.dtpFechaInicial.TabIndex = 12;
@@ -285,7 +291,7 @@
             // chboxFecha
             // 
             this.chboxFecha.AutoSize = true;
-            this.chboxFecha.Location = new System.Drawing.Point(476, 73);
+            this.chboxFecha.Location = new System.Drawing.Point(754, 23);
             this.chboxFecha.Name = "chboxFecha";
             this.chboxFecha.Size = new System.Drawing.Size(126, 17);
             this.chboxFecha.TabIndex = 13;
@@ -297,7 +303,7 @@
             // 
             this.labResultadoAfiliado.AutoSize = true;
             this.labResultadoAfiliado.ForeColor = System.Drawing.Color.Gray;
-            this.labResultadoAfiliado.Location = new System.Drawing.Point(626, 151);
+            this.labResultadoAfiliado.Location = new System.Drawing.Point(648, 129);
             this.labResultadoAfiliado.Name = "labResultadoAfiliado";
             this.labResultadoAfiliado.Size = new System.Drawing.Size(0, 13);
             this.labResultadoAfiliado.TabIndex = 15;
@@ -305,7 +311,7 @@
             // labNumeroAfiliados
             // 
             this.labNumeroAfiliados.AutoSize = true;
-            this.labNumeroAfiliados.Location = new System.Drawing.Point(489, 151);
+            this.labNumeroAfiliados.Location = new System.Drawing.Point(489, 129);
             this.labNumeroAfiliados.Name = "labNumeroAfiliados";
             this.labNumeroAfiliados.Size = new System.Drawing.Size(131, 13);
             this.labNumeroAfiliados.TabIndex = 14;
@@ -330,7 +336,7 @@
             // 
             // btnCargar
             // 
-            this.btnCargar.Location = new System.Drawing.Point(38, 59);
+            this.btnCargar.Location = new System.Drawing.Point(198, 54);
             this.btnCargar.Name = "btnCargar";
             this.btnCargar.Size = new System.Drawing.Size(101, 23);
             this.btnCargar.TabIndex = 18;
@@ -340,7 +346,7 @@
             // 
             // btnReiniciar
             // 
-            this.btnReiniciar.Location = new System.Drawing.Point(161, 58);
+            this.btnReiniciar.Location = new System.Drawing.Point(321, 53);
             this.btnReiniciar.Name = "btnReiniciar";
             this.btnReiniciar.Size = new System.Drawing.Size(101, 23);
             this.btnReiniciar.TabIndex = 19;
@@ -357,7 +363,7 @@
             // 
             // btnFiltrar
             // 
-            this.btnFiltrar.Location = new System.Drawing.Point(282, 59);
+            this.btnFiltrar.Location = new System.Drawing.Point(442, 54);
             this.btnFiltrar.Name = "btnFiltrar";
             this.btnFiltrar.Size = new System.Drawing.Size(101, 23);
             this.btnFiltrar.TabIndex = 21;
@@ -365,11 +371,39 @@
             this.btnFiltrar.UseVisualStyleBackColor = true;
             this.btnFiltrar.Click += new System.EventHandler(this.btnFiltrar_Click);
             // 
+            // dtpFechaFinal
+            // 
+            this.dtpFechaFinal.Location = new System.Drawing.Point(724, 154);
+            this.dtpFechaFinal.Name = "dtpFechaFinal";
+            this.dtpFechaFinal.Size = new System.Drawing.Size(194, 20);
+            this.dtpFechaFinal.TabIndex = 22;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(769, 53);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(95, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "FECHA DE INICIO";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(781, 129);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(75, 13);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "FECHA FINAL";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(929, 363);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.dtpFechaFinal);
             this.Controls.Add(this.btnFiltrar);
             this.Controls.Add(this.tbRutaExcel);
             this.Controls.Add(this.btnReiniciar);
@@ -408,9 +442,9 @@
         private System.Windows.Forms.DataGridView dgvTablaAfiliados;
         private System.Windows.Forms.Label labFechaFinal;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel tsslTimer;
+        private System.Windows.Forms.ToolStripStatusLabel tsslTiempo;
         private System.Windows.Forms.OpenFileDialog ofdExcel;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer tTiempo;
         private System.Windows.Forms.ComboBox cbEntidad;
         private System.Windows.Forms.ComboBox cbMunicipio;
         private System.Windows.Forms.Label labFechaInicio;
@@ -432,6 +466,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DateTimePicker dtpFechaFinal;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }
 
