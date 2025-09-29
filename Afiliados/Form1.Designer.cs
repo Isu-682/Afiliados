@@ -32,6 +32,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.dgvTablaAfiliados = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.labFechaFinal = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslTimer = new System.Windows.Forms.ToolStripStatusLabel();
@@ -42,7 +48,7 @@
             this.labFechaInicio = new System.Windows.Forms.Label();
             this.labInicioResultadoFecha = new System.Windows.Forms.Label();
             this.labFinalResultadoFecha = new System.Windows.Forms.Label();
-            this.dtpFecha = new System.Windows.Forms.DateTimePicker();
+            this.dtpFechaInicial = new System.Windows.Forms.DateTimePicker();
             this.chboxFecha = new System.Windows.Forms.CheckBox();
             this.labResultadoAfiliado = new System.Windows.Forms.Label();
             this.labNumeroAfiliados = new System.Windows.Forms.Label();
@@ -51,6 +57,7 @@
             this.btnCargar = new System.Windows.Forms.Button();
             this.btnReiniciar = new System.Windows.Forms.Button();
             this.tbRutaExcel = new System.Windows.Forms.TextBox();
+            this.btnFiltrar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTablaAfiliados)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -75,17 +82,66 @@
             // 
             // dgvTablaAfiliados
             // 
+            this.dgvTablaAfiliados.AllowUserToAddRows = false;
+            this.dgvTablaAfiliados.AllowUserToDeleteRows = false;
+            this.dgvTablaAfiliados.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTablaAfiliados.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTablaAfiliados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTablaAfiliados.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4,
+            this.Column5,
+            this.Column6});
             this.dgvTablaAfiliados.Location = new System.Drawing.Point(12, 188);
             this.dgvTablaAfiliados.Name = "dgvTablaAfiliados";
-            this.dgvTablaAfiliados.Size = new System.Drawing.Size(717, 150);
+            this.dgvTablaAfiliados.ReadOnly = true;
+            this.dgvTablaAfiliados.Size = new System.Drawing.Size(903, 150);
             this.dgvTablaAfiliados.TabIndex = 2;
-            this.dgvTablaAfiliados.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTablaAfiliados_CellContentClick);
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "ID";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "ENTIDAD";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "MUNICIPIO";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "NOMBRE";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            // 
+            // Column5
+            // 
+            this.Column5.HeaderText = "FECHA_AFILIACION";
+            this.Column5.Name = "Column5";
+            this.Column5.ReadOnly = true;
+            // 
+            // Column6
+            // 
+            this.Column6.HeaderText = "ESTATUS";
+            this.Column6.Name = "Column6";
+            this.Column6.ReadOnly = true;
             // 
             // labFechaFinal
             // 
             this.labFechaFinal.AutoSize = true;
-            this.labFechaFinal.Location = new System.Drawing.Point(279, 155);
+            this.labFechaFinal.Location = new System.Drawing.Point(282, 155);
             this.labFechaFinal.Name = "labFechaFinal";
             this.labFechaFinal.Size = new System.Drawing.Size(85, 13);
             this.labFechaFinal.TabIndex = 3;
@@ -97,7 +153,7 @@
             this.tsslTimer});
             this.statusStrip1.Location = new System.Drawing.Point(0, 341);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(743, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(929, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -149,11 +205,13 @@
             this.cbEntidad.Name = "cbEntidad";
             this.cbEntidad.Size = new System.Drawing.Size(121, 21);
             this.cbEntidad.TabIndex = 6;
+            this.cbEntidad.SelectedIndexChanged += new System.EventHandler(this.cbEntidad_SelectedIndexChanged_1);
             // 
             // cbMunicipio
             // 
             this.cbMunicipio.FormattingEnabled = true;
             this.cbMunicipio.Items.AddRange(new object[] {
+            "SIN MUNICIPIO",
             "ABASOLO",
             "ACUÑA",
             "ALLENDE",
@@ -205,9 +263,8 @@
             this.labInicioResultadoFecha.ForeColor = System.Drawing.Color.Gray;
             this.labInicioResultadoFecha.Location = new System.Drawing.Point(393, 108);
             this.labInicioResultadoFecha.Name = "labInicioResultadoFecha";
-            this.labInicioResultadoFecha.Size = new System.Drawing.Size(95, 13);
+            this.labInicioResultadoFecha.Size = new System.Drawing.Size(0, 13);
             this.labInicioResultadoFecha.TabIndex = 11;
-            this.labInicioResultadoFecha.Text = "FECHA DE INICIO";
             // 
             // labFinalResultadoFecha
             // 
@@ -215,21 +272,20 @@
             this.labFinalResultadoFecha.ForeColor = System.Drawing.Color.Gray;
             this.labFinalResultadoFecha.Location = new System.Drawing.Point(390, 155);
             this.labFinalResultadoFecha.Name = "labFinalResultadoFecha";
-            this.labFinalResultadoFecha.Size = new System.Drawing.Size(85, 13);
+            this.labFinalResultadoFecha.Size = new System.Drawing.Size(0, 13);
             this.labFinalResultadoFecha.TabIndex = 10;
-            this.labFinalResultadoFecha.Text = "ULTIMA FECHA";
             // 
-            // dtpFecha
+            // dtpFechaInicial
             // 
-            this.dtpFecha.Location = new System.Drawing.Point(465, 58);
-            this.dtpFecha.Name = "dtpFecha";
-            this.dtpFecha.Size = new System.Drawing.Size(194, 20);
-            this.dtpFecha.TabIndex = 12;
+            this.dtpFechaInicial.Location = new System.Drawing.Point(455, 101);
+            this.dtpFechaInicial.Name = "dtpFechaInicial";
+            this.dtpFechaInicial.Size = new System.Drawing.Size(194, 20);
+            this.dtpFechaInicial.TabIndex = 12;
             // 
             // chboxFecha
             // 
             this.chboxFecha.AutoSize = true;
-            this.chboxFecha.Location = new System.Drawing.Point(494, 30);
+            this.chboxFecha.Location = new System.Drawing.Point(476, 73);
             this.chboxFecha.Name = "chboxFecha";
             this.chboxFecha.Size = new System.Drawing.Size(126, 17);
             this.chboxFecha.TabIndex = 13;
@@ -241,16 +297,15 @@
             // 
             this.labResultadoAfiliado.AutoSize = true;
             this.labResultadoAfiliado.ForeColor = System.Drawing.Color.Gray;
-            this.labResultadoAfiliado.Location = new System.Drawing.Point(644, 108);
+            this.labResultadoAfiliado.Location = new System.Drawing.Point(626, 151);
             this.labResultadoAfiliado.Name = "labResultadoAfiliado";
-            this.labResultadoAfiliado.Size = new System.Drawing.Size(85, 13);
+            this.labResultadoAfiliado.Size = new System.Drawing.Size(0, 13);
             this.labResultadoAfiliado.TabIndex = 15;
-            this.labResultadoAfiliado.Text = "ULTIMA FECHA";
             // 
             // labNumeroAfiliados
             // 
             this.labNumeroAfiliados.AutoSize = true;
-            this.labNumeroAfiliados.Location = new System.Drawing.Point(507, 108);
+            this.labNumeroAfiliados.Location = new System.Drawing.Point(489, 151);
             this.labNumeroAfiliados.Name = "labNumeroAfiliados";
             this.labNumeroAfiliados.Size = new System.Drawing.Size(131, 13);
             this.labNumeroAfiliados.TabIndex = 14;
@@ -277,7 +332,7 @@
             // 
             this.btnCargar.Location = new System.Drawing.Point(38, 59);
             this.btnCargar.Name = "btnCargar";
-            this.btnCargar.Size = new System.Drawing.Size(75, 23);
+            this.btnCargar.Size = new System.Drawing.Size(101, 23);
             this.btnCargar.TabIndex = 18;
             this.btnCargar.Text = "CARGAR";
             this.btnCargar.UseVisualStyleBackColor = true;
@@ -287,7 +342,7 @@
             // 
             this.btnReiniciar.Location = new System.Drawing.Point(161, 58);
             this.btnReiniciar.Name = "btnReiniciar";
-            this.btnReiniciar.Size = new System.Drawing.Size(75, 23);
+            this.btnReiniciar.Size = new System.Drawing.Size(101, 23);
             this.btnReiniciar.TabIndex = 19;
             this.btnReiniciar.Text = "REINICIAR";
             this.btnReiniciar.UseVisualStyleBackColor = true;
@@ -297,14 +352,25 @@
             // 
             this.tbRutaExcel.Location = new System.Drawing.Point(104, 21);
             this.tbRutaExcel.Name = "tbRutaExcel";
-            this.tbRutaExcel.Size = new System.Drawing.Size(246, 20);
+            this.tbRutaExcel.Size = new System.Drawing.Size(545, 20);
             this.tbRutaExcel.TabIndex = 20;
+            // 
+            // btnFiltrar
+            // 
+            this.btnFiltrar.Location = new System.Drawing.Point(282, 59);
+            this.btnFiltrar.Name = "btnFiltrar";
+            this.btnFiltrar.Size = new System.Drawing.Size(101, 23);
+            this.btnFiltrar.TabIndex = 21;
+            this.btnFiltrar.Text = "FILTRAR";
+            this.btnFiltrar.UseVisualStyleBackColor = true;
+            this.btnFiltrar.Click += new System.EventHandler(this.btnFiltrar_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 363);
+            this.ClientSize = new System.Drawing.Size(929, 363);
+            this.Controls.Add(this.btnFiltrar);
             this.Controls.Add(this.tbRutaExcel);
             this.Controls.Add(this.btnReiniciar);
             this.Controls.Add(this.btnCargar);
@@ -313,7 +379,7 @@
             this.Controls.Add(this.labResultadoAfiliado);
             this.Controls.Add(this.labNumeroAfiliados);
             this.Controls.Add(this.chboxFecha);
-            this.Controls.Add(this.dtpFecha);
+            this.Controls.Add(this.dtpFechaInicial);
             this.Controls.Add(this.labInicioResultadoFecha);
             this.Controls.Add(this.labFinalResultadoFecha);
             this.Controls.Add(this.labFechaInicio);
@@ -350,7 +416,7 @@
         private System.Windows.Forms.Label labFechaInicio;
         private System.Windows.Forms.Label labInicioResultadoFecha;
         private System.Windows.Forms.Label labFinalResultadoFecha;
-        private System.Windows.Forms.DateTimePicker dtpFecha;
+        private System.Windows.Forms.DateTimePicker dtpFechaInicial;
         private System.Windows.Forms.CheckBox chboxFecha;
         private System.Windows.Forms.Label labResultadoAfiliado;
         private System.Windows.Forms.Label labNumeroAfiliados;
@@ -359,6 +425,13 @@
         private System.Windows.Forms.Button btnCargar;
         private System.Windows.Forms.Button btnReiniciar;
         private System.Windows.Forms.TextBox tbRutaExcel;
+        private System.Windows.Forms.Button btnFiltrar;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
     }
 }
 
