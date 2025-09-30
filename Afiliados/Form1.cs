@@ -444,10 +444,5 @@ namespace Afiliados
                 labFinalResultadoFecha.Text = "Columna no encontrada";
             }
         }
-
-        private void dgvTablaAfiliados_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
     }
 }
