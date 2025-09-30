@@ -1,6 +1,6 @@
 ﻿namespace Afiliados
 {
-    partial class Form1
+    partial class frmAfiliados
     {
         /// <summary>
         /// Variable del diseñador necesaria.
@@ -443,7 +443,7 @@
             this.labFechaFin.TabIndex = 24;
             this.labFechaFin.Text = "FECHA FINAL";
             // 
-            // Form1
+            // frmAfiliados
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -474,7 +474,7 @@
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Segoe Script", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.Name = "Form1";
+            this.Name = "frmAfiliados";
             this.Text = "Afiliados del PRI";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTablaAfiliados)).EndInit();

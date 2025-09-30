@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Afiliados
 {
-    public partial class Form1 : Form
+    public partial class frmAfiliados : Form
     {
         // Contiene los datos cargados desde el archivo Excel
         private DataTable tablaAfiliados;
@@ -61,7 +61,7 @@ namespace Afiliados
 
         // Inicializa los componentes visuales y registra el proveedor de codificaciones
         // necesarias para leer archivos Excel con codificaciones específicas
-        public Form1()
+        public frmAfiliados()
         {
             InitializeComponent();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
