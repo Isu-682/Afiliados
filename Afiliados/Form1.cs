@@ -64,6 +64,7 @@ namespace Afiliados
         public frmAfiliados()
         {
             InitializeComponent();
+            // Necesario para leer archivos Excel.xls antiguos que usan otras codificaciones
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
@@ -123,6 +124,7 @@ namespace Afiliados
             if (opfExcel.ShowDialog() == DialogResult.OK)
             {
                 // Libera recursos si ya había una tabla cargada
+                // Libera recursos si ya había una tabla cargada
                 if (tablaAfiliados != null)
                 {
                     tablaAfiliados.Dispose();
@@ -146,22 +148,32 @@ namespace Afiliados
         // Solo lee la primera hoja del libro y usa la primera fila como encabezados
         private DataTable CargarExcel(string rutaArchivo)
         {
+            // Abre el archivo Excel indicado en rutaArchivo en modo lectura y crea un flujo que será automáticamente cerrado al terminar de usarlo
             using (var stream = File.Open(rutaArchivo, FileMode.Open, FileAccess.Read))
             {
+                // Crea un lector de Excel a partir del archivo abierto, que me permite leer su contenido hoja por hoja y fila por fila
+                // Cuando termine, el lector se cerrará automáticamente
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
+                    // Convierte el contenido del archivo Excel en un DataSet, aplicando configuraciones como: usar encabezados, y elegir qué hojas cargar
                     var result = reader.AsDataSet(new ExcelDataSetConfiguration()
                     {
                         // Configura la lectura de la hoja de Excel: se usará la primera fila como encabezados de columna
+                        // El guion bajo _ es simplemente una variable anónima. Significa: "No me importa el valor que me estás pasando"
+                        // Se usa para indicar que el argumento no es relevante.
                         ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
                         {
+                            // True: la primera fila del Excel se usa como nombres de columnas
+                            // False: se crean columnas genéricas como Column1, Column2, etc., y la primera fila se considera un registro normal
                             UseHeaderRow = true
                         },
-                        // Solo se carga la primera hoja
+                        // Es un filtro que decide qué hojas del Excel se van a procesar
+                        // Convierte el contenido del archivo Excel en un DataSet, aplicando configuraciones como:
+                        // usar encabezados, y elegir qué hojas cargar
                         FilterSheet = (tableReader, index) => index == 0
                     });
 
-                    return result.Tables[0];
+                    return result.Tables[0]; //
                 }
             }
         }
@@ -354,6 +366,7 @@ namespace Afiliados
                 DataTable datosFiltrados = datosOriginales.DefaultView.ToTable(false, columnasNecesarias);
 
                 // Accede al hilo principal para actualizar la UI
+                // Ejecuta este bloque de código en el hilo principal, para que sea seguro modificar controles gráficos desde un hilo secundario
                 Invoke(new Action(() =>
                 {
                     // Libera la tabla anterior si existía
