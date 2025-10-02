@@ -1,4 +1,4 @@
-﻿using OfficeOpenXml;
+﻿using ExcelDataReader;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,450 +12,236 @@ namespace Afiliados
 {
     public partial class frmAfiliados : Form
     {
-        // Contiene los datos cargados desde el archivo Excel
+        // Tabla en memoria para almacenar los datos del archivo Excel
         private DataTable tablaAfiliados;
-        // Ruta del archivo Excel seleccionado por el usuario
+        // Ruta del archivo seleccionado
         private string rutaArchivo;
 
-        // Diccionario que almacena la relación entre entidades federativas y sus municipios correspondientes
-        // Cada clave representa una entidad, y el valor es una lista de municipios pertenecientes a esa entidad
-        private Dictionary<string, List<string>> entidadMunicipios = new Dictionary<string, List<string>>()
+        // Diccionario que relaciona la entidad "COAHUILA" con sus municipios
+        Dictionary<string, List<string>> entidadMunicipios = new Dictionary<string, List<string>>()
         {
-            { "COAHUILA", new List<string>
-            { "SIN MUNICIPIO", "ABASOLO", "ACUÑA", "ALLENDE", "ARTEAGA", "CASTAÑOS",
-                "CUATROCIENEGAS", "FRANCISCO I. MADERO", "FRONTERA", "GENERAL CEPEDA",
-                "JIMENEZ", "LAMADRID", "MATAMOROS", "MONCLOVA", "MUZQUIZ", "NADADORES",
-                "NAVA", "OCAMPO", "PARRAS", "PIEDRAS NEGRAS", "PROGRESO", "RAMOS ARIZPE",
-                "SABINAS", "SACRAMENTO", "SALTILLO", "SAN BUENAVENTURA", "SAN PEDRO",
-                "SIERRA MOJADA", "TORREON", "VIESCA", "VILLA UNION", "ZARAGOZA"
+            { "COAHUILA", new List<string> { "SIN MUNICIPIO","ABASOLO","ACUÑA","ALLENDE","ARTEAGA","CASTAÑOS",
+                "CUATROCIENEGAS","FRANCISCO I. MADERO","FRONTERA","GENERAL CEPEDA","JIMENEZ","LAMADRID",
+                "MATAMOROS","MONCLOVA","MUZQUIZ","NADADORES","NAVA","OCAMPO","PARRAS","PIEDRAS NEGRAS",
+                "PROGRESO","RAMOS ARIZPE","SABINAS","SACRAMENTO","SALTILLO","SAN BUENAVENTURA","SAN PEDRO",
+                "SIERRA MOJADA","TORREON","VIESCA","VILLA UNION","ZARAGOZA"}
             }
-            },
-            { "AGUASCALIENTES", new List<string> { "SIN MUNICIPIO" } },
-            { "BAJA CALIFORNIA", new List<string> { "SIN MUNICIPIO" } },
-            { "BAJA CALIFORNIA SUR", new List<string> { "SIN MUNICIPIO" } },
-            { "CAMPECHE", new List<string> { "SIN MUNICIPIO" } },
-            { "COLIMA", new List<string> { "SIN MUNICIPIO" } },
-            { "CHIAPAS", new List<string> { "SIN MUNICIPIO" } },
-            { "CHIHUAHUA", new List<string> { "SIN MUNICIPIO" } },
-            { "DURANGO", new List<string> { "SIN MUNICIPIO" } },
-            { "GUANAJUATO", new List<string> { "SIN MUNICIPIO" } },
-            { "GUERRERO", new List<string> { "SIN MUNICIPIO" } },
-            { "HIDALGO", new List<string> { "SIN MUNICIPIO" } },
-            { "JALISCO", new List<string> { "SIN MUNICIPIO" } },
-            { "MORELOS", new List<string> { "SIN MUNICIPIO" } },
-            { "NAYARIT", new List<string> { "SIN MUNICIPIO" } },
-            { "NUEVO LEON", new List<string> { "SIN MUNICIPIO" } },
-            { "OAXACA", new List<string> { "SIN MUNICIPIO" } },
-            { "PUEBLA", new List<string> { "SIN MUNICIPIO" } },
-            { "QUERETARO", new List<string> { "SIN MUNICIPIO" } },
-            { "QUINTANA ROO", new List<string> { "SIN MUNICIPIO" } },
-            { "SAN LUIS POTOSI", new List<string> { "SIN MUNICIPIO" } },
-            { "SINALOA", new List<string> { "SIN MUNICIPIO" } },
-            { "TABASCO", new List<string> { "SIN MUNICIPIO" } },
-            { "TAMAULIPAS", new List<string> { "SIN MUNICIPIO" } },
-            { "TLAXCALA", new List<string> { "SIN MUNICIPIO" } },
-            { "VERACRUZ", new List<string> { "SIN MUNICIPIO" } },
-            { "YUCATAN", new List<string> { "SIN MUNICIPIO" } },
-            { "ZACATECAS", new List<string> { "SIN MUNICIPIO" } },
         };
 
-        // Inicializa los componentes visuales y registra el proveedor de codificaciones
-        // necesarias para leer archivos Excel con codificaciones específicas
+        // Columnas que se esperan del archivo Excel
+        string[] columnas = { "ID", "ENTIDAD", "MUNICIPIO", "NOMBRE", "FECHA_AFILIACION", "ESTATUS" };
+
         public frmAfiliados()
         {
             InitializeComponent();
-            // Necesario para leer archivos Excel.xls antiguos que usan otras codificaciones
+            // Necesario para que ExcelDataReader pueda leer archivos con codificación diferente
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        // Configura el estado inicial de los controles del formulario como la visibilidad de fechas,
-        // el temporizador de reloj, y la carga de entidades en el ComboBox.
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Oculta controles de fecha al iniciar
-            labFechaIn.Visible = false;
-            labFechaFin.Visible = false;
-            dtpFechaInicial.Visible = false;
-            dtpFechaFinal.Visible = false;
-
-            // Desactiva la autogeneración de columnas del DataGridView
+            // Ocultar controles de fechas inicialmente
+            labFechaIn.Visible = labFechaFin.Visible = dtpFechaInicial.Visible = dtpFechaFinal.Visible = false;
             dgvTablaAfiliados.AutoGenerateColumns = false;
 
-            // Configura y activa el temporizador para mostrar la hora actual
+            // Configuración de reloj en barra de estado
             tTiempo.Interval = 1000;
-            tTiempo.Tick += tTiempo_Tick;
+            tTiempo.Tick += (s, ev) => tsslTiempo.Text = DateTime.Now.ToString("HH:mm:ss");
             tTiempo.Start();
 
-            // Carga las entidades al ComboBox y limpia la selección
+            // Cargar entidades en ComboBox
             cbEntidad.DataSource = entidadMunicipios.Keys.ToList();
-            cbEntidad.SelectedIndex = -1;
 
-            // Limpia el ComboBox de municipios
-            cbMunicipio.DataSource = null;
-
-            // Registra el evento para cuando cambie la entidad seleccionada
-            cbEntidad.SelectedIndexChanged += cbEntidad_SelectedIndexChanged_1;
+            // Al cambiar de entidad, actualizar los municipios correspondientes
+            cbEntidad.SelectedIndexChanged += (s, ev) =>
+                cbMunicipio.DataSource = entidadMunicipios.ContainsKey(cbEntidad.Text) ? entidadMunicipios[cbEntidad.Text] : null;
         }
 
-        // Muestra u oculta los controles de selección de fechas y etiquetas relacionadas
+        // Evento que muestra u oculta los filtros por fecha
         private void chboxFecha_CheckedChanged(object sender, EventArgs e)
         {
             bool mostrar = chboxFecha.Checked;
-            dtpFechaInicial.Visible = mostrar;
-            dtpFechaFinal.Visible = mostrar;
-
-            labFechaIn.Visible = mostrar;
-            labFechaFin.Visible = mostrar;
-
-            // Si se desactiva el filtro por fecha, se reinician los valores
-            if (!mostrar)
-            {
-                dtpFechaInicial.Value = DateTime.Today;
-                dtpFechaFinal.Value = DateTime.Today;
-            }
+            dtpFechaInicial.Visible = dtpFechaFinal.Visible = labFechaIn.Visible = labFechaFin.Visible = mostrar;
+            if (!mostrar) dtpFechaInicial.Value = dtpFechaFinal.Value = DateTime.Today;
         }
 
-        // Abre un diálogo para seleccionar un archivo de Excel y comienza la carga en un hilo separado
         private void btnCargar_Click(object sender, EventArgs e)
         {
-            OpenFileDialog opfExcel = new OpenFileDialog();
-            opfExcel.Filter = "Archivos de Excel|*.xls;*.xlsx";
-
-            if (opfExcel.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog opfExcel = new OpenFileDialog { Filter = "Archivos de Excel|*.xls;*.xlsx" })
             {
-                // Libera recursos si ya había una tabla cargada
-                // Libera recursos si ya había una tabla cargada
-                if (tablaAfiliados != null)
-                {
-                    tablaAfiliados.Dispose();
-                    tablaAfiliados = null;
-                }
+                if (opfExcel.ShowDialog() != DialogResult.OK) return;
 
-                // Deshabilita controles mientras se carga el archivo
+                tablaAfiliados?.Dispose(); // Limpia la tabla previa si existe
                 rutaArchivo = opfExcel.FileName;
                 tbRutaExcel.Text = rutaArchivo;
-                tbRutaExcel.Enabled = false;
-                btnCargar.Text = "CARGANDO...";
-                btnCargar.Enabled = false;
 
-                // Carga el archivo en un hilo aparte para no congelar la interfaz
-                Thread hilo = new Thread(new ThreadStart(CargarArchivoEnHilo));
-                hilo.Start();
+                // Deshabilita los controles mientras carga
+                tbRutaExcel.Enabled = btnCargar.Enabled = false;
+
+                // Ejecuta la carga del archivo en un hilo separado
+                new Thread(CargarArchivoEnHilo).Start();
             }
         }
 
-        // Carga el contenido de un archivo de Excel en una tabla de datos (DataTable)
-        // Solo lee la primera hoja del libro y usa la primera fila como encabezados
-        private DataTable CargarExcel(string rutaArchivo)
-        {
-            // Abre el archivo Excel indicado en rutaArchivo en modo lectura y crea un flujo que será automáticamente cerrado al terminar de usarlo
-            using (var stream = File.Open(rutaArchivo, FileMode.Open, FileAccess.Read))
+        private DataTable CargarExcel(string ruta) =>
+            ExcelReaderFactory.CreateReader(File.Open(ruta, FileMode.Open, FileAccess.Read))
+            .AsDataSet(new ExcelDataSetConfiguration
             {
-                // Crea un lector de Excel a partir del archivo abierto, que me permite leer su contenido hoja por hoja y fila por fila
-                // Cuando termine, el lector se cerrará automáticamente
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
-                {
-                    // Convierte el contenido del archivo Excel en un DataSet, aplicando configuraciones como: usar encabezados, y elegir qué hojas cargar
-                    var result = reader.AsDataSet(new ExcelDataSetConfiguration()
-                    {
-                        // Configura la lectura de la hoja de Excel: se usará la primera fila como encabezados de columna
-                        // El guion bajo _ es simplemente una variable anónima. Significa: "No me importa el valor que me estás pasando"
-                        // Se usa para indicar que el argumento no es relevante.
-                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
-                        {
-                            // True: la primera fila del Excel se usa como nombres de columnas
-                            // False: se crean columnas genéricas como Column1, Column2, etc., y la primera fila se considera un registro normal
-                            UseHeaderRow = true
-                        },
-                        // Es un filtro que decide qué hojas del Excel se van a procesar
-                        // Convierte el contenido del archivo Excel en un DataSet, aplicando configuraciones como:
-                        // usar encabezados, y elegir qué hojas cargar
-                        FilterSheet = (tableReader, index) => index == 0
-                    });
+                ConfigureDataTable = _ => new ExcelDataTableConfiguration { UseHeaderRow = true },
+                FilterSheet = (r, i) => i == 0 // Solo se usa la primera hoja
+            }).Tables[0];
 
-                    return result.Tables[0]; //
-                }
-            }
-        }
-
-        // Limpia la interfaz, restablece los valores de los controles, y borra cualquier archivo cargado previamente
+        // Reinicia todos los controles a su estado inicial
         private void btnReiniciar_Click(object sender, EventArgs e)
         {
             dgvTablaAfiliados.DataSource = null;
             tbRutaExcel.Clear();
-
-            // Limpia etiquetas de resultado
-            labResultadoAfiliado.Text = "0";
-            labInicioResultadoFecha.Text = "No disponible";
-            labFinalResultadoFecha.Text = "No disponible";
-
-            dgvTablaAfiliados.DataSource = null;
-            tbRutaExcel.Clear();
-
-            // Limpia selección de entidad y municipio
             cbEntidad.SelectedIndex = -1;
             cbMunicipio.DataSource = null;
-
-            // Refuerza limpieza por seguridad
             labResultadoAfiliado.Text = "0";
-            labInicioResultadoFecha.Text = "";
-            labFinalResultadoFecha.Text = "";
+            labInicioResultadoFecha.Text = labFinalResultadoFecha.Text = "";
         }
 
-        // Filtra los registros mostrados en el DataGridView en función de la entidad, municipio y rango de fechas seleccionados
         private void btnFiltrar_Click(object sender, EventArgs e)
         {
-            // Si no hay datos cargados, no se realiza ninguna acción
             if (tablaAfiliados == null) return;
-
-            // Se obtiene una vista de los datos originales para aplicar filtros
             DataView vista = tablaAfiliados.DefaultView;
-
-            string entidad = cbEntidad.SelectedItem?.ToString();
-            string municipio = cbMunicipio.SelectedItem?.ToString();
-
             List<string> filtros = new List<string>();
 
-            // Filtro por entidad seleccionada
-            if (!string.IsNullOrEmpty(entidad))
-                filtros.Add($"ENTIDAD = '{entidad.Replace("'", "''")}'");
+            // Filtro por entidad
+            if (!string.IsNullOrEmpty(cbEntidad.Text))
+                filtros.Add($"ENTIDAD = '{cbEntidad.Text.Replace("'", "''")}'");
 
-            // Filtro por municipio, considerando los valores vacíos como "SIN MUNICIPIO"
-            if (!string.IsNullOrEmpty(municipio))
+            // Filtro por municipio
+            if (!string.IsNullOrEmpty(cbMunicipio.Text) && cbMunicipio.Text != "TODOS")
             {
-                if (municipio == "SIN MUNICIPIO")
+                if (cbMunicipio.Text == "SIN MUNICIPIO")
                     filtros.Add("(MUNICIPIO IS NULL OR MUNICIPIO = '')");
                 else
-                    filtros.Add($"MUNICIPIO = '{municipio.Replace("'", "''")}'");
+                    filtros.Add($"MUNICIPIO = '{cbMunicipio.Text.Replace("'", "''")}'");
             }
 
-            // Filtro por fechas si los controles están visibles
-            if (dtpFechaInicial.Visible && dtpFechaFinal.Visible)
-            {
-                DateTime fechaInicio = dtpFechaInicial.Value.Date;
-                DateTime fechaFin = dtpFechaFinal.Value.Date;
+            // Filtro por rango de fechas
+            if (dtpFechaInicial.Visible)
+                filtros.Add($"FECHA_AFILIACION >= #{dtpFechaInicial.Value:MM/dd/yyyy}# AND FECHA_AFILIACION <= #{dtpFechaFinal.Value:MM/dd/yyyy}#");
 
-                // El formato con # es para la sintaxis de filtros de DataTable
-                filtros.Add($"FECHA_AFILIACION >= #{fechaInicio:MM/dd/yyyy}# AND FECHA_AFILIACION <= #{fechaFin:MM/dd/yyyy}#");
-            }
-
-            // Se combinan los filtros con AND lógico
+            // Aplicar filtro combinado
             vista.RowFilter = string.Join(" AND ", filtros);
-
-            // Se actualiza la tabla con la vista filtrada
             dgvTablaAfiliados.DataSource = vista;
-
-            // Muestra el número de resultados encontrados
             labResultadoAfiliado.Text = $"{vista.Count}";
 
-            // Si hay resultados, se actualizan las fechas mínima y máxima encontradas
+            // Mostrar rango de fechas si hay resultados
             if (vista.Count > 0)
             {
-                // Toma la columna FECHA_AFILIACION de todos los registros actualmente visibles en el DataView,
-                // convierte esas fechas a DateTime, las ordena de menor a mayor, y las guarda en una lista
-                var fechasFiltradas = vista.Cast<DataRowView>()
-                                          .Select(r => Convert.ToDateTime(r["FECHA_AFILIACION"]))
-                                          .OrderBy(f => f)
-                                          .ToList();
-
-                labInicioResultadoFecha.Text = fechasFiltradas.First().ToString("dd/MM/yyyy");
-                labFinalResultadoFecha.Text = fechasFiltradas.Last().ToString("dd/MM/yyyy");
+                var fechas = vista.Cast<DataRowView>()
+                                  .Select(r => Convert.ToDateTime(r["FECHA_AFILIACION"]))
+                                  .OrderBy(f => f).ToList();
+                labInicioResultadoFecha.Text = fechas.First().ToString("dd/MM/yyyy");
+                labFinalResultadoFecha.Text = fechas.Last().ToString("dd/MM/yyyy");
             }
             else
             {
-                // Si no hay resultados, se indican como no disponibles
-                labInicioResultadoFecha.Text = "No disponible";
-                labFinalResultadoFecha.Text = "No disponible";
+                labInicioResultadoFecha.Text = labFinalResultadoFecha.Text = "No disponible";
             }
         }
 
-        // Configura manualmente las columnas del DataGridView para mostrar las propiedades esperadas del archivo Excel
+        // Configura las columnas del DataGridView manualmente
         private void ConfigurarColumnas()
         {
-            // Desactiva la generación automática para usar configuración manual
             dgvTablaAfiliados.AutoGenerateColumns = false;
             dgvTablaAfiliados.Columns.Clear();
 
-            // Agrega columna para ID
-            dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "ID",
-                HeaderText = "ID",
-                Name = "ID"
-            });
-
-            // Columna para ENTIDAD
-            dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "ENTIDAD",
-                HeaderText = "ENTIDAD",
-                Name = "ENTIDAD"
-            });
-
-            // Columna para MUNICIPIO
-            dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "MUNICIPIO",
-                HeaderText = "MUNICIPIO",
-                Name = "MUNICIPIO"
-            });
-
-            // Columna para NOMBRE del afiliado
-            dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "NOMBRE",
-                HeaderText = "NOMBRE",
-                Name = "NOMBRE"
-            });
-
-            // Columna para FECHA de AFILIACION
-            dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "FECHA_AFILIACION",
-                HeaderText = "FECHA AFILIACION",
-                Name = "FECHA_AFILIACION"
-            });
-
-            // Columna para ESTATUS
-            dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn()
-            {
-                DataPropertyName = "ESTATUS",
-                HeaderText = "ESTATUS",
-                Name = "ESTATUS"
-            });
+            foreach (var col in columnas)
+                dgvTablaAfiliados.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = col,
+                    HeaderText = col.Replace("_", " "),
+                    Name = col
+                });
         }
 
-        // Actualiza el ComboBox de municipios con base en la entidad seleccionada
         private void cbEntidad_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            if (cbEntidad.SelectedItem == null) return;
+            string entidad = cbEntidad.SelectedItem as string;
 
-            string entidadSeleccionada = cbEntidad.SelectedItem.ToString();
-
-            if (entidadMunicipios.ContainsKey(entidadSeleccionada))
+            if (string.IsNullOrWhiteSpace(entidad))
             {
-                // Asigna la lista de municipios correspondientes a la entidad seleccionada
-                cbMunicipio.DataSource = entidadMunicipios[entidadSeleccionada];
-            }
-            else
-            {
-                // Limpia el ComboBox si no hay municipios disponibles
                 cbMunicipio.DataSource = null;
+                return;
             }
+
+            List<string> municipios;
+            if (!entidadMunicipios.TryGetValue(entidad, out municipios))
+            {
+                cbMunicipio.DataSource = null;
+                return;
+            }
+
+            // Agregar "TODOS" como opción adicional
+            List<string> listaMunicipios = new List<string> { "TODOS" };
+            listaMunicipios.AddRange(municipios);
+
+            cbMunicipio.DataSource = listaMunicipios;
         }
 
-        // Evento del temporizador que actualiza la hora actual en la barra de estado
         private void tTiempo_Tick(object sender, EventArgs e)
         {
             tsslTiempo.Text = DateTime.Now.ToString("HH:mm:ss");
         }
 
-        // Carga el archivo Excel seleccionado en un hilo separado para no bloquear la UI
-        // Solo se cargan las columnas necesarias, y se actualiza la interfaz con los datos cargados
         private void CargarArchivoEnHilo()
         {
             try
             {
-                // Carga los datos desde el archivo Excel
-                DataTable datosOriginales = CargarExcel(rutaArchivo);
+                // Cargar solo las columnas necesarias
+                var datosFiltrados = CargarExcel(rutaArchivo).DefaultView.ToTable(false, "ID", "ENTIDAD", "MUNICIPIO", "NOMBRE", "FECHA_AFILIACION", "ESTATUS");
 
-                // Define las columnas que se desean conservar
-                string[] columnasNecesarias = { "ID", "ENTIDAD", "MUNICIPIO", "NOMBRE", "FECHA_AFILIACION", "ESTATUS" };
-
-                // Filtra el DataTable para que solo contenga las columnas necesarias
-                DataTable datosFiltrados = datosOriginales.DefaultView.ToTable(false, columnasNecesarias);
-
-                // Accede al hilo principal para actualizar la UI
-                // Ejecuta este bloque de código en el hilo principal, para que sea seguro modificar controles gráficos desde un hilo secundario
+                // Ejecutar en el hilo principal
                 Invoke(new Action(() =>
                 {
-                    // Libera la tabla anterior si existía
-                    if (tablaAfiliados != null)
-                    {
-                        tablaAfiliados.Dispose();
-                        tablaAfiliados = null;
-                    }
-
-                    // Asigna los nuevos datos filtrados
+                    tablaAfiliados?.Dispose();
                     tablaAfiliados = datosFiltrados;
 
-                    // Mejora rendimiento al modificar columnas
                     dgvTablaAfiliados.SuspendLayout();
-
-                    // Define las columnas del DataGridView manualmente
                     ConfigurarColumnas();
-
                     dgvTablaAfiliados.DataSource = tablaAfiliados;
-
-                    // Llena el ancho disponible
                     dgvTablaAfiliados.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-                    // Reactiva el layout
                     dgvTablaAfiliados.ResumeLayout();
 
-                    // Muestra el rango de fechas disponible
                     ConfigurarFechas(tablaAfiliados);
-
-                    // Muestra número de registros
                     labResultadoAfiliado.Text = $"{tablaAfiliados.Rows.Count}";
 
-                    // Notifica al usuario
                     MessageBox.Show("Archivo cargado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Restablece el estado de los controles
-                    btnCargar.Text = "CARGAR";
-                    btnCargar.Enabled = true;
-                    tbRutaExcel.Enabled = true;
+                    btnCargar.Enabled = tbRutaExcel.Enabled = true;
                 }));
             }
             catch (Exception ex)
             {
-                // En caso de error, muestra mensaje y habilita nuevamente los controles
+                // Mostrar error si algo falla
                 Invoke(new Action(() =>
                 {
                     MessageBox.Show("Error al cargar Excel: " + ex.Message);
-                    btnCargar.Text = "CARGAR";
-                    btnCargar.Enabled = true;
-                    tbRutaExcel.Enabled = true;
+                    btnCargar.Enabled = tbRutaExcel.Enabled = true;
                 }));
             }
         }
 
-        // Configura y muestra las fechas mínima y máxima de afiliación encontradas en el DataTable.
+        // Extrae y muestra el rango de fechas de afiliación disponibles
         private void ConfigurarFechas(DataTable datos)
         {
-            // Verifica si existe la columna "FECHA_AFILIACION" en el DataTable
-            if (datos.Columns.Contains("FECHA_AFILIACION"))
+            if (!datos.Columns.Contains("FECHA_AFILIACION"))
             {
-                // Convierte el DataTable en una lista de fechas de la columna "FECHA_AFILIACION" excluyendo valores nulos
-                // Filtra las filas que no tienen valor nulo en la columna de fecha
-                // Su resultado seria una lista que contiene todas las fechas válidas encontradas en la columna
-                var fechas = datos.AsEnumerable()
-                                  .Where(r => !r.IsNull("FECHA_AFILIACION"))
-                                  // Convierte a DateTime
-                                  .Select(r => Convert.ToDateTime(r["FECHA_AFILIACION"]))
-                                  .ToList();
+                labInicioResultadoFecha.Text = labFinalResultadoFecha.Text = "Columna no encontrada";
+                return;
+            }
 
-                // Si hay fechas válidas
-                if (fechas.Any())
-                {
-                    // Muestra la fecha más antigua y la más reciente en formato dd/MM/yyyy
-                    labInicioResultadoFecha.Text = fechas.Min().ToString("dd/MM/yyyy");
-                    labFinalResultadoFecha.Text = fechas.Max().ToString("dd/MM/yyyy");
-                }
-                else
-                {
-                    // No hay fechas válidas en el dataset
-                    labInicioResultadoFecha.Text = "No disponible";
-                    labFinalResultadoFecha.Text = "No disponible";
-                }
-            }
-            else
+            var fechas = datos.AsEnumerable().Where(r => !r.IsNull("FECHA_AFILIACION")).Select(r => Convert.ToDateTime(r["FECHA_AFILIACION"])).ToList();
+            if (fechas.Any())
             {
-                // La columna "FECHA_AFILIACION" no fue encontrada en el archivo Excel
-                labInicioResultadoFecha.Text = "Columna no encontrada";
-                labFinalResultadoFecha.Text = "Columna no encontrada";
+                labInicioResultadoFecha.Text = fechas.Min().ToString("dd/MM/yyyy");
+                labFinalResultadoFecha.Text = fechas.Max().ToString("dd/MM/yyyy");
             }
+            else labInicioResultadoFecha.Text = labFinalResultadoFecha.Text = "No disponible";
         }
     }
 }

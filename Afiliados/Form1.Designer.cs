@@ -105,7 +105,7 @@
             this.Column5,
             this.Column6});
             this.dgvTablaAfiliados.Location = new System.Drawing.Point(16, 311);
-            this.dgvTablaAfiliados.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.dgvTablaAfiliados.Margin = new System.Windows.Forms.Padding(5);
             this.dgvTablaAfiliados.Name = "dgvTablaAfiliados";
             this.dgvTablaAfiliados.ReadOnly = true;
             this.dgvTablaAfiliados.Size = new System.Drawing.Size(1125, 231);
@@ -219,7 +219,7 @@
             "YUCATAN",
             "ZACATECAS"});
             this.cbEntidad.Location = new System.Drawing.Point(139, 162);
-            this.cbEntidad.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbEntidad.Margin = new System.Windows.Forms.Padding(5);
             this.cbEntidad.Name = "cbEntidad";
             this.cbEntidad.Size = new System.Drawing.Size(159, 28);
             this.cbEntidad.TabIndex = 6;
@@ -231,6 +231,7 @@
             this.cbMunicipio.ForeColor = System.Drawing.SystemColors.Window;
             this.cbMunicipio.FormattingEnabled = true;
             this.cbMunicipio.Items.AddRange(new object[] {
+            "TODOS",
             "SIN MUNICIPIO",
             "ABASOLO",
             "ACUÑA",
@@ -264,7 +265,7 @@
             "VILLA UNION",
             "ZARAGOZA"});
             this.cbMunicipio.Location = new System.Drawing.Point(139, 231);
-            this.cbMunicipio.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbMunicipio.Margin = new System.Windows.Forms.Padding(5);
             this.cbMunicipio.Name = "cbMunicipio";
             this.cbMunicipio.Size = new System.Drawing.Size(159, 28);
             this.cbMunicipio.TabIndex = 7;
@@ -304,7 +305,7 @@
             // 
             this.dtpFechaInicial.CalendarMonthBackground = System.Drawing.Color.DarkKhaki;
             this.dtpFechaInicial.Location = new System.Drawing.Point(866, 151);
-            this.dtpFechaInicial.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.dtpFechaInicial.Margin = new System.Windows.Forms.Padding(5);
             this.dtpFechaInicial.Name = "dtpFechaInicial";
             this.dtpFechaInicial.Size = new System.Drawing.Size(261, 27);
             this.dtpFechaInicial.TabIndex = 12;
@@ -314,7 +315,7 @@
             this.chboxFecha.AutoSize = true;
             this.chboxFecha.ForeColor = System.Drawing.Color.SaddleBrown;
             this.chboxFecha.Location = new System.Drawing.Point(910, 68);
-            this.chboxFecha.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.chboxFecha.Margin = new System.Windows.Forms.Padding(5);
             this.chboxFecha.Name = "chboxFecha";
             this.chboxFecha.Size = new System.Drawing.Size(156, 24);
             this.chboxFecha.TabIndex = 13;
@@ -368,7 +369,7 @@
             this.btnCargar.BackColor = System.Drawing.Color.YellowGreen;
             this.btnCargar.ForeColor = System.Drawing.Color.DarkGreen;
             this.btnCargar.Location = new System.Drawing.Point(264, 84);
-            this.btnCargar.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnCargar.Margin = new System.Windows.Forms.Padding(5);
             this.btnCargar.Name = "btnCargar";
             this.btnCargar.Size = new System.Drawing.Size(135, 35);
             this.btnCargar.TabIndex = 18;
@@ -381,7 +382,7 @@
             this.btnReiniciar.BackColor = System.Drawing.Color.YellowGreen;
             this.btnReiniciar.ForeColor = System.Drawing.Color.DarkGreen;
             this.btnReiniciar.Location = new System.Drawing.Point(427, 82);
-            this.btnReiniciar.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnReiniciar.Margin = new System.Windows.Forms.Padding(5);
             this.btnReiniciar.Name = "btnReiniciar";
             this.btnReiniciar.Size = new System.Drawing.Size(135, 35);
             this.btnReiniciar.TabIndex = 19;
@@ -394,7 +395,7 @@
             this.tbRutaExcel.BackColor = System.Drawing.Color.OliveDrab;
             this.tbRutaExcel.ForeColor = System.Drawing.SystemColors.Window;
             this.tbRutaExcel.Location = new System.Drawing.Point(139, 31);
-            this.tbRutaExcel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tbRutaExcel.Margin = new System.Windows.Forms.Padding(5);
             this.tbRutaExcel.Name = "tbRutaExcel";
             this.tbRutaExcel.Size = new System.Drawing.Size(725, 27);
             this.tbRutaExcel.TabIndex = 20;
@@ -404,7 +405,7 @@
             this.btnFiltrar.BackColor = System.Drawing.Color.YellowGreen;
             this.btnFiltrar.ForeColor = System.Drawing.Color.DarkGreen;
             this.btnFiltrar.Location = new System.Drawing.Point(589, 84);
-            this.btnFiltrar.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnFiltrar.Margin = new System.Windows.Forms.Padding(5);
             this.btnFiltrar.Name = "btnFiltrar";
             this.btnFiltrar.Size = new System.Drawing.Size(135, 35);
             this.btnFiltrar.TabIndex = 21;
@@ -416,7 +417,7 @@
             // 
             this.dtpFechaFinal.CalendarMonthBackground = System.Drawing.Color.DarkKhaki;
             this.dtpFechaFinal.Location = new System.Drawing.Point(866, 230);
-            this.dtpFechaFinal.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.dtpFechaFinal.Margin = new System.Windows.Forms.Padding(5);
             this.dtpFechaFinal.Name = "dtpFechaFinal";
             this.dtpFechaFinal.Size = new System.Drawing.Size(261, 27);
             this.dtpFechaFinal.TabIndex = 22;
@@ -473,7 +474,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Segoe Script", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "frmAfiliados";
             this.Text = "Afiliados del PRI";
             this.Load += new System.EventHandler(this.Form1_Load);
